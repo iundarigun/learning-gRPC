@@ -14,6 +14,18 @@ message PrimeNumberDecomposeRequest{
     int32 operator = 1;
 }
 
+message ComputeAverageRequest{
+    int32 operator = 1;
+}
+
+message FindMaximumRequest {
+    int32 operator = 1;
+}
+
+message SquareRootRequest {
+    int32 number = 1;
+}
+
 message SumResponse {
     int32 result = 1;
 }
@@ -21,10 +33,33 @@ message SumResponse {
 message PrimeNumberDecomposeResponse {
     int32 result = 1;
 }
+
+message ComputeAverageResponse{
+    double result = 1;
+}
+
+message FindMaximumResponse {
+    int32 result = 1;
+}
+
+message SquareRootResponse {
+    double result = 1;
+}
+
 service CalculatorService {
     // Unary
     rpc Sum(SumRequest) returns (SumResponse) {};
 
     // stream server
     rpc PrimeNumberDecompose(PrimeNumberDecomposeRequest) returns (stream PrimeNumberDecomposeResponse) {};
+
+    // Stream client
+    rpc ComputeAverage(stream ComputeAverageRequest) returns (ComputeAverageResponse) {};
+
+    // Bidirectional stream
+    rpc FindMaximum(stream FindMaximumRequest) returns (stream FindMaximumResponse) {};
+
+    // Error handling
+    // This rpc will throw an exception if the send number is negative
+    rpc SquareRoot(SquareRootRequest) returns (SquareRootResponse){};
 }

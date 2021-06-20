@@ -1,12 +1,17 @@
 package br.com.devcave.grpc.greeting.server
 
+import br.com.devcave.grpc.proto.greet.GreetEveryoneRequest
+import br.com.devcave.grpc.proto.greet.GreetEveryoneResponse
 import br.com.devcave.grpc.proto.greet.GreetManyTimesRequest
 import br.com.devcave.grpc.proto.greet.GreetManyTimesResponse
 import br.com.devcave.grpc.proto.greet.GreetRequest
 import br.com.devcave.grpc.proto.greet.GreetResponse
 import br.com.devcave.grpc.proto.greet.GreetServiceGrpc
+import br.com.devcave.grpc.proto.greet.GreetWithDeadlineRequest
+import br.com.devcave.grpc.proto.greet.GreetWithDeadlineResponse
 import br.com.devcave.grpc.proto.greet.LongGreetRequest
 import br.com.devcave.grpc.proto.greet.LongGreetResponse
+import io.grpc.Context
 import io.grpc.stub.StreamObserver
 
 class GreetServiceImpl : GreetServiceGrpc.GreetServiceImplBase() {
@@ -77,5 +82,52 @@ class GreetServiceImpl : GreetServiceGrpc.GreetServiceImplBase() {
                 responseObserver.onCompleted()
             }
         }
+    }
+
+    override fun greetEveryone(
+        responseObserver: StreamObserver<GreetEveryoneResponse>
+    ): StreamObserver<GreetEveryoneRequest> {
+        return object : StreamObserver<GreetEveryoneRequest> {
+            override fun onNext(value: GreetEveryoneRequest) {
+                val response = "Hello ${value.greeting.firstName}!"
+
+                responseObserver.onNext(
+                    GreetEveryoneResponse.newBuilder()
+                        .setResult(response)
+                        .build()
+                )
+            }
+
+            override fun onError(t: Throwable) {
+                // Error
+            }
+
+            override fun onCompleted() {
+                responseObserver.onCompleted()
+            }
+        }
+    }
+
+    override fun greetWithDeadline(
+        request: GreetWithDeadlineRequest,
+        responseObserver: StreamObserver<GreetWithDeadlineResponse>
+    ) {
+        val current = Context.current();
+
+        (1..3).forEach { _ ->
+            println("sleeping")
+            Thread.sleep(100)
+            if (current.isCancelled) {
+                return
+            }
+        }
+
+        println("sending")
+        responseObserver.onNext(
+            GreetWithDeadlineResponse.newBuilder()
+                .setResult("Hello ${request.greeting.firstName}!")
+                .build()
+        )
+        responseObserver.onCompleted()
     }
 }

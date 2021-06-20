@@ -55,6 +55,13 @@ service GreetService{
 - gRPC suggests strongly to use SSL
 - Using interceptors, we can also provide authentication
 
+## Others
+- gRPC uses onError to send errors from server to client. (https://grpc.io/docs/guides/error/)
+- It is recomended set a deadline for all client RPC calls (https://grpc.io/blog/deadlines/)
+
+---
+## References
 
 - https://grpc.io/
 - https://github.com/grpc/grpc-java
+- https://www.udemy.com/course/grpc-java
