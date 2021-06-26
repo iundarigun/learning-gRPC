@@ -97,9 +97,32 @@ openssl pkcs8 -topk8 -nocrypt -passin pass:1111 -in server.key -out server.pem
 - gRPC uses onError to send errors from server to client. (https://grpc.io/docs/guides/error/)
 - It is recomended set a deadline for all client RPC calls (https://grpc.io/blog/deadlines/)
 
+## About channel
+Channel is an abstract over a connection and represents the connection. Connection creation is lazy and established during the first RPC. 
+
+1 channel/connection for client/server is enough, event for concurrent requests. You can create more channels but not really required. (Channel creation is an expensive process)
+
+For LoadBalance on client side we use subchannel, representing connections between client and server instances. We have two strategies, first instance available (default) and Round Robin
+
+## Server executors
+We have three options for configure threads executors. 
+- CachedThreadPool: The default, that use from jetty threadpool
+- DirectExecutor: Event loop, better for non-blocking apps
+- FixedThreadPool: Open configuration, allow you to decide the number of thread
+
+```kotlin
+    val server = ServerBuilder.forPort(50055)
+        // .directExecutor()  // option for event loop
+        // .executor(Executors.newFixedThreadPool(20)) // Fixed number
+        .intercept(AuthInterceptor())
+        .addService(GreetServiceImpl())
+        .build()
+```
+
 ---
 ## References
 
 - https://grpc.io/
 - https://github.com/grpc/grpc-java
 - https://www.udemy.com/course/grpc-java
+- https://www.udemy.com/course/grpc-the-complete-guide-for-java-developers

@@ -1,4 +1,4 @@
-package br.com.devcave.grpc.greeting.server
+package br.com.devcave.grpc.loadbalancing.server
 
 import br.com.devcave.grpc.proto.greet.GreetEveryoneRequest
 import br.com.devcave.grpc.proto.greet.GreetEveryoneResponse
@@ -14,12 +14,12 @@ import br.com.devcave.grpc.proto.greet.LongGreetResponse
 import io.grpc.Context
 import io.grpc.stub.StreamObserver
 
-class GreetServiceImpl : GreetServiceGrpc.GreetServiceImplBase() {
+class GreetServiceImpl(private val server: String) : GreetServiceGrpc.GreetServiceImplBase() {
 
     override fun greet(request: GreetRequest, responseObserver: StreamObserver<GreetResponse>) {
         val greeting = request.greeting
 
-        val result = "Hello ${greeting.firstName}!"
+        val result = "Hello ${greeting.firstName}! We are $server"
         val response = GreetResponse.newBuilder()
             .setResult(result)
             .build()
@@ -112,9 +112,9 @@ class GreetServiceImpl : GreetServiceGrpc.GreetServiceImplBase() {
         request: GreetWithDeadlineRequest,
         responseObserver: StreamObserver<GreetWithDeadlineResponse>
     ) {
-        val current = Context.current()
+        val current = Context.current();
 
-        for(it in 1..3) {
+        (1..3).forEach { _ ->
             println("sleeping")
             Thread.sleep(100)
             if (current.isCancelled) {

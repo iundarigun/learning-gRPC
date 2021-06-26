@@ -1,4 +1,4 @@
-package br.com.devcave.grpc.greeting.server
+package br.com.devcave.grpc.interceptors.server
 
 import br.com.devcave.grpc.proto.greet.GreetEveryoneRequest
 import br.com.devcave.grpc.proto.greet.GreetEveryoneResponse
@@ -19,7 +19,9 @@ class GreetServiceImpl : GreetServiceGrpc.GreetServiceImplBase() {
     override fun greet(request: GreetRequest, responseObserver: StreamObserver<GreetResponse>) {
         val greeting = request.greeting
 
-        val result = "Hello ${greeting.firstName}!"
+        val userType = AuthInterceptor.userTypeKey.get()
+
+        val result = "Hello ${greeting.firstName}, you are $userType!"
         val response = GreetResponse.newBuilder()
             .setResult(result)
             .build()
