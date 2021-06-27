@@ -15,6 +15,7 @@ repositories {
     mavenCentral()
 }
 
+val swaggerVersion = "3.0.0"
 val grpcVersion = "2.12.0.RELEASE"
 
 dependencies {
@@ -27,6 +28,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
 
     implementation("net.devh:grpc-client-spring-boot-starter:$grpcVersion")
+
+    implementation("io.springfox:springfox-boot-starter:$swaggerVersion")
+    implementation("io.springfox:springfox-swagger-ui:$swaggerVersion")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
