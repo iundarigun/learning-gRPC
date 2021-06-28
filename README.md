@@ -126,3 +126,5 @@ We have three options for configure threads executors.
 - https://github.com/grpc/grpc-java
 - https://www.udemy.com/course/grpc-java
 - https://www.udemy.com/course/grpc-the-complete-guide-for-java-developers
+- https://github.com/uw-labs/bloomrpc
+- https://yidongnan.github.io/grpc-spring-boot-starter/en/
